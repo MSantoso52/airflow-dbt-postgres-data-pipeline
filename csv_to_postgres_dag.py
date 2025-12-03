@@ -114,49 +114,49 @@ default_arg = {
     schedule = None,
     catchup = False,
     tags = ['csv', 'postgres', 'dbt']
-    )
-    def csv_to_postgres():
+)
+def csv_to_postgres():
         
-        load_customer_data = PythonOperator(
-            task_id = 'load_customer_data',
-            python_callable = data_ingestion,
-            op_kwarg = {
-                'file_path': FILE_PATH_1,
-                'psql_connection': POSTGRES_CONN_ID,
-                'create_table_sql': create_table_sql_1,
-                'sql_insert': sql_insert_1
-            },
-        ) 
+    load_customer_data = PythonOperator(
+        task_id = 'load_customer_data',
+        python_callable = data_ingestion,
+        op_kwarg = {
+            'file_path': FILE_PATH_1,
+            'psql_connection': POSTGRES_CONN_ID,
+            'create_table_sql': create_table_sql_1,
+            'sql_insert': sql_insert_1
+        },
+    ) 
 
-        load_orders = PythonOperator(
-            task_id = 'load_orders',
-            python_callable = data_ingestion,
-            op_kwarg = {
-                'file_path': FILE_PATH_2,
-                'psql_connection': POSTGRES_CONN_ID,
-                'create_table_sql': create_table_sql_2,
-                'sql_insert': sql_insert_2
-            },
-        )
+    load_orders = PythonOperator(
+        task_id = 'load_orders',
+        python_callable = data_ingestion,
+        op_kwarg = {
+            'file_path': FILE_PATH_2,
+            'psql_connection': POSTGRES_CONN_ID,
+            'create_table_sql': create_table_sql_2,
+            'sql_insert': sql_insert_2
+        },
+    )
 
-        load_order_items = PythonOperator(
-            task_id = 'load_order_items',
-            python_callable = data_ingestion,
-            op_kwarg = {
-                'file_path': FILE_PATH_3,
-                'psql_connection': POSTGRES_CONN_ID,
-                'create_table_sql': create_table_sql_3,
-                'sql_insert': sql_insert_3
-            },
-        )
+    load_order_items = PythonOperator(
+        task_id = 'load_order_items',
+        python_callable = data_ingestion,
+        op_kwarg = {
+            'file_path': FILE_PATH_3,
+            'psql_connection': POSTGRES_CONN_ID,
+            'create_table_sql': create_table_sql_3,
+            'sql_insert': sql_insert_3
+        },
+    )
 
-        run_dbt_model = BashOperator(
-            task_id = 'run_dbt_model',
-            bash_command = f'''
-                cd {DBT_PROJECT_DIR} && dbt run --profile {DBT_PROFILE}
-            ''',
-        )
+    run_dbt_model = BashOperator(
+        task_id = 'run_dbt_model',
+        bash_command = f'''
+            cd {DBT_PROJECT_DIR} && dbt run --profile {DBT_PROFILE}
+        ''',
+    )
 
-        [load_customer_data, load_orders, load_order_items] >> run_dbt_model
+    [load_customer_data, load_orders, load_order_items] >> run_dbt_model
 
 csv_to_postgres()
