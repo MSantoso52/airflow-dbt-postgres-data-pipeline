@@ -1,14 +1,14 @@
 from airflow.decorators import dag
 from datetime import datetime, timedelta
-from airflow.providers.postgres.hook.postgres import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 import pandas as pd
 
-FILE_PATH_1 = 'customer_data.csv'
-FILE_PATH_2 = 'order.csv'
-FILE_PATH_3 = 'order_item.csv'
+FILE_PATH_1 = '/home/mulyo/local_airflow/dags/customer_data.csv'
+FILE_PATH_2 = '/home/mulyo/local_airflow/dags/order_data.csv'
+FILE_PATH_3 = '/home/mulyo/local_airflow/dags/order_item_data.csv'
 
 db_config = {
     'host': 'localhost',
@@ -21,7 +21,7 @@ table_1 = 'customers'
 table_2 = 'orders'
 table_3 = 'orderitems'
 
-create_table_sql_1 = f'''
+create_table_sql_1 = '''
     CREATE TABLE IF NOT EXISTS customers(
         customer_id INTEGER PRIMARY KEY,
         full_name VARCHAR(255),
@@ -31,7 +31,7 @@ create_table_sql_1 = f'''
     );
 '''
 
-create_table_sql_2 = f'''
+create_table_sql_2 = '''
     CREATE TABLE IF NOT EXISTS orders(
         order_id INTEGER PRIMARY KEY,
         customer_id INTEGER,
@@ -43,7 +43,7 @@ create_table_sql_2 = f'''
     );
 '''
 
-create_table_sql_3 = f'''
+create_table_sql_3 = '''
     CREATE TABLE IF NOT EXISTS orderitems(
         order_item_id INTEGER PRIMARY KEY,
         order_id INTEGER,
@@ -54,22 +54,22 @@ create_table_sql_3 = f'''
     );
 '''
 
-sql_insert_1 = f'''
+sql_insert_1 = '''
     INSERT INTO customers (customer_id, full_name, address, city, zipcode)
     VALUES (%s, %s, %s, %s, %s)
 '''
 
-sql_insert_2 = f'''
+sql_insert_2 = '''
     INSERT INTO orders (order_id, customer_id, order_date, product_name, quantity, unit_price, total_price)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
 '''
 
-sql_insert_3 = f'''
+sql_insert_3 = '''
     INSERT INTO orderitems (order_item_id, order_id, item_name, item_quantity, item_unit_price, item_total_price)
     VALUES (%s, %s, %s, %s, %s, %s)
 '''
 
-DBT_PROJECT_DIR = '/home/mulyo/dbt_snowflake/customers'
+DBT_PROJECT_DIR = '/home/mulyo/dbt_snowflake/customers/'
 DBT_PROFILE = 'customers'
 
 # --- Python function to ingest CSV ---
@@ -100,7 +100,7 @@ def data_ingestion(
 
 POSTGRES_CONN_ID = 'postgres_conn'
 
-default_arg = {
+default_args = {
     'owner': 'mulyo',
     'tries': 5,
     'try_delay': timedelta(minutes=2)
@@ -109,7 +109,7 @@ default_arg = {
 @dag(
     dag_id = 'csv_to_postgres',
     description = 'data ingestion and transformation on postgres',
-    default_arg = default_arg,
+    default_args = default_args,
     start_date = datetime(2025, 12, 3),
     schedule = None,
     catchup = False,
@@ -120,7 +120,7 @@ def csv_to_postgres():
     load_customer_data = PythonOperator(
         task_id = 'load_customer_data',
         python_callable = data_ingestion,
-        op_kwarg = {
+        op_kwargs = {
             'file_path': FILE_PATH_1,
             'psql_connection': POSTGRES_CONN_ID,
             'create_table_sql': create_table_sql_1,
@@ -131,7 +131,7 @@ def csv_to_postgres():
     load_orders = PythonOperator(
         task_id = 'load_orders',
         python_callable = data_ingestion,
-        op_kwarg = {
+        op_kwargs = {
             'file_path': FILE_PATH_2,
             'psql_connection': POSTGRES_CONN_ID,
             'create_table_sql': create_table_sql_2,
@@ -142,7 +142,7 @@ def csv_to_postgres():
     load_order_items = PythonOperator(
         task_id = 'load_order_items',
         python_callable = data_ingestion,
-        op_kwarg = {
+        op_kwargs = {
             'file_path': FILE_PATH_3,
             'psql_connection': POSTGRES_CONN_ID,
             'create_table_sql': create_table_sql_3,
