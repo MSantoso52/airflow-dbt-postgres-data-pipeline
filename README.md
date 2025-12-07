@@ -143,12 +143,12 @@ The combination of these specific tools offers significant leverage by introduci
    customers_db=# select * from transaction.customerrevenue limit 5;
     customer_id |   customername   | ordercount | revenue
    -------------+------------------+------------+---------
-       11031 | Alexander Palmer |          3 |  583.19
-       11011 | Chelsey Lopez    |          3 |  528.65
-       11091 | Denise Ryan      |          4 |  835.24
-       11041 | Kenneth Palmer   |          4 |  718.45
-       11083 | Gabriel Lee      |          4 |  689.97
-   (5 rows)
+          11031 | Alexander Palmer |          3 |  583.19
+          11011 | Chelsey Lopez    |          3 |  528.65
+          11091 | Denise Ryan      |          4 |  835.24
+          11041 | Kenneth Palmer   |          4 |  718.45
+          11083 | Gabriel Lee      |          4 |  689.97
+      (5 rows)
    ``
 
 # *Assumption*
