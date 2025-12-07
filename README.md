@@ -25,7 +25,7 @@ The combination of these specific tools offers significant leverage by introduci
    ```sql
    CREATE DATABASE customers_db;
    ```
-3. Create docker-compose.yml with dbt project
+2. Create docker-compose.yml with dbt project
    ```lvim
    volumes:
      ...
@@ -33,6 +33,13 @@ The combination of these specific tools offers significant leverage by introduci
       - /home/mulyo/dbt_snowflake/customers/:/usr/local/airflow/dbt_project:rw
      ...
    ```
+3. Install into dedicated VENV path through Dockerfile
+   ```bash
+    # The dbt executable will now be at /opt/dbt_venv/bin/dbt
+     RUN python -m venv /opt/dbt_venv && \
+     /opt/dbt_venv/bin/pip install --no-cache-dir \
+     dbt-postgres
+   ```  
 
 # *Assumption*
 1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
