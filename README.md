@@ -39,7 +39,37 @@ The combination of these specific tools offers significant leverage by introduci
      RUN python -m venv /opt/dbt_venv && \
      /opt/dbt_venv/bin/pip install --no-cache-dir \
      dbt-postgres
-   ```  
+   ```
+4. Build Airflow
+   ```bash
+   docker-compose up airflow-init
+
+   docker-compose up -d
+   ```
+5. Check Airflow & dbt readiness
+   ```bash
+   > docker ps
+   CONTAINER ID   IMAGE                                  COMMAND                  CREATED       STATUS                 PORTS    NAMES
+   d5e5ebbbeb2c   airflow_docker_airflow-worker          "/usr/bin/dumb-init …"   4 hours ago   Up 4 hours (healthy)   8080/tcp airflow_docker_airflow-worker_1
+
+   # checking airflow container
+   > doccker exec -it airflow_docker_airflow-worker_1 bash
+   ---airflow---
+   default@d5e5ebbbeb2c:/opt/airflow$ ls -l /usr/local/airflow/dbt_project
+   total 48
+   -rw-rw-r-- 1 default 1000  571 Nov 28 00:54 README.md
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 analyses
+   -rw-rw-r-- 1 default 1000 1241 Dec  3 01:14 dbt_project.yml
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 example
+   drwxrwxr-x 2 default 1000 4096 Dec  3 01:16 logs
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 macros
+   drwxrwxr-x 2 default 1000 4096 Dec  6 09:18 models
+   -rw-r--r-- 1 default root  218 Dec  7 09:03 profiles.yml
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 seeds
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 snapshots
+   drwxrwxr-x 4 default 1000 4096 Dec  6 09:01 target
+   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 tests
+   ```
 
 # *Assumption*
 1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
