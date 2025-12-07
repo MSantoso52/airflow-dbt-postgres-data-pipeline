@@ -52,6 +52,7 @@ The combination of these specific tools offers significant leverage by introduci
    > docker ps
    CONTAINER ID   IMAGE                          COMMAND                  CREATED       STATUS                 PORTS    NAMES
    d5e5ebbbeb2c   airflow_docker_airflow-worker  "/usr/bin/dumb-init …"   4 hours ago   Up 4 hours (healthy)   8080/tcp airflow_docker_airflow-worker_1
+   .....
 
    # checking airflow container
    > doccker exec -it airflow_docker_airflow-worker_1 bash
