@@ -1,0 +1,12 @@
+customers:
+  outputs:
+    dev:
+      dbname: customers_db
+      host: 192.168.49.1
+      pass: duckdb
+      port: 5432
+      schema: transaction
+      threads: 4
+      type: postgres
+      user: postgres
+  target: dev
