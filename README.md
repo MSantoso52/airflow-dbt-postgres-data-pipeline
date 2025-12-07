@@ -111,7 +111,7 @@ The combination of these specific tools offers significant leverage by introduci
    ```
 6. Run airflow dag from webpage
    Access from: http://0.0.0.0:8080/
-   Dags > Choose dag (csv_to_postgres) > manual trigger
+   <br>Dags > Choose dag (csv_to_postgres) > manual trigger
    ![DAG run screenshot](airflow_dbt/dag_run.png)
 8. Check result on PostgreSQL
    ```bash
