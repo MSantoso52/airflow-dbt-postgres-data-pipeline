@@ -26,7 +26,7 @@ The combination of these specific tools offers significant leverage by introduci
    ```sql
    CREATE DATABASE customers_db;
    ```
-2. Create docker-compose.yml with dbt project
+2. Create docker-compose.yml and mount local(existing) dbt project  
    ```lvim
    volumes:
      ...
