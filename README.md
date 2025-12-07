@@ -92,7 +92,7 @@ The combination of these specific tools offers significant leverage by introduci
    22:34:48   - git [OK found]
 
    22:34:48  Connection:
-   22:34:48    host: 192.168.49.1
+   22:34:48    host: 192.168.**.*
    22:34:48    port: 5432
    22:34:48    user: postgres
    22:34:48    database: customers_db
