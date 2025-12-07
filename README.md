@@ -49,8 +49,8 @@ The combination of these specific tools offers significant leverage by introduci
 5. Check Airflow & dbt readiness
    ```bash
    > docker ps
-   CONTAINER ID   IMAGE                                  COMMAND                  CREATED       STATUS                 PORTS    NAMES
-   d5e5ebbbeb2c   airflow_docker_airflow-worker          "/usr/bin/dumb-init …"   4 hours ago   Up 4 hours (healthy)   8080/tcp airflow_docker_airflow-worker_1
+   CONTAINER ID   IMAGE                          COMMAND                  CREATED       STATUS                 PORTS    NAMES
+   d5e5ebbbeb2c   airflow_docker_airflow-worker  "/usr/bin/dumb-init …"   4 hours ago   Up 4 hours (healthy)   8080/tcp airflow_docker_airflow-worker_1
 
    # checking airflow container
    > doccker exec -it airflow_docker_airflow-worker_1 bash
@@ -109,6 +109,39 @@ The combination of these specific tools offers significant leverage by introduci
 
    09:03:14  All checks passed!
    ```
+6. Run airflow dag from webpage
+   Access from: http://0.0.0.0:8080/
+   Dags > Choose dag (csv_to_postgres) > manual trigger
+7. Check result on PostgreSQL
+   ```sql
+   customers_db=# \d
+           List of relations
+    Schema |    Name    | Type  |  Owner
+   --------+------------+-------+----------
+    public | customers  | table | postgres
+    public | orderitems | table | postgres
+    public | orders     | table | postgres
+   (3 rows)
+
+   customers_db=# \d transaction.customerrevenue
+                  Table "transaction.customerrevenue"
+       Column    |          Type          | Collation | Nullable | Default
+   --------------+------------------------+-----------+----------+---------
+    customer_id  | integer                |           |          |
+    customername | character varying(255) |           |          |
+    ordercount   | bigint                 |           |          |
+    revenue      | numeric                |           |          |
+
+   customers_db=# select * from transaction.customerrevenue limit 5;
+    customer_id |   customername   | ordercount | revenue
+   -------------+------------------+------------+---------
+       11031 | Alexander Palmer |          3 |  583.19
+       11011 | Chelsey Lopez    |          3 |  528.65
+       11091 | Denise Ryan      |          4 |  835.24
+       11041 | Kenneth Palmer   |          4 |  718.45
+       11083 | Gabriel Lee      |          4 |  689.97
+   (5 rows)
+   ``
 
 # *Assumption*
 1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
