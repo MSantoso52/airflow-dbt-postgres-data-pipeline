@@ -55,7 +55,7 @@ The combination of these specific tools offers significant leverage by introduci
    # checking airflow container
    > doccker exec -it airflow_docker_airflow-worker_1 bash
    ---airflow---
-   default@d5e5ebbbeb2c:/opt/airflow$ ls -l /usr/local/airflow/dbt_project
+   default@d5e5ebbbeb2c:/usr/local/airflow/dbt_project$ ls -l
    total 48
    -rw-rw-r-- 1 default 1000  571 Nov 28 00:54 README.md
    drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 analyses
@@ -69,6 +69,45 @@ The combination of these specific tools offers significant leverage by introduci
    drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 snapshots
    drwxrwxr-x 4 default 1000 4096 Dec  6 09:01 target
    drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 tests
+
+   ---dbt---
+   default@d5e5ebbbeb2c:/usr/local/airflow/dbt_project$ /opt/dbt_venv/bin/dbt debug
+   09:03:14  Running with dbt=1.10.15
+   09:03:14  dbt version: 1.10.15
+   09:03:14  python version: 3.11.14
+   09:03:14  python path: /opt/dbt_venv/bin/python3.11
+   09:03:14  os info: Linux-6.8.0-88-generic-x86_64-with-glibc2.36
+   09:03:14  Using profiles dir at /usr/local/airflow/dbt_project
+   09:03:14  Using profiles.yml file at /usr/local/airflow/dbt_project/profiles.yml
+   09:03:14  Using dbt_project.yml file at /usr/local/airflow/dbt_project/dbt_project.yml
+   09:03:14  adapter type: postgres
+   09:03:14  adapter version: 1.9.1
+   09:03:14  Configuration:
+   09:03:14    profiles.yml file [OK found and valid]
+   09:03:14    dbt_project.yml file [OK found and valid]
+   09:03:14  Required dependencies:
+   09:03:14   - git [OK found]
+
+   09:03:14  Connection:
+   09:03:14    host: 192.168.49.1
+   09:03:14    port: 5432
+   09:03:14    user: postgres
+   09:03:14    database: customers_db
+   09:03:14    schema: transaction
+   09:03:14    connect_timeout: 10
+   09:03:14    role: None
+   09:03:14    search_path: None
+   09:03:14    keepalives_idle: 0
+   09:03:14    sslmode: None
+   09:03:14    sslcert: None
+   09:03:14    sslkey: None
+   09:03:14    sslrootcert: None
+   09:03:14    application_name: dbt
+   09:03:14    retries: 1
+   09:03:14  Registered adapter: postgres=1.9.1
+   09:03:14    Connection test: [OK connection ok]
+
+   09:03:14  All checks passed!
    ```
 
 # *Assumption*
