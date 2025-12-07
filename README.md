@@ -1,5 +1,6 @@
 # airflow-dbt-postgres-data-pipeline
 Using Airflow for data pipeline &amp; dbt for data transformation on postgresql
+![Project Flow]()
 # *Project Overview*
 Models a modern ETL (Extract, Transform, Load) data pipeline architecture, providing a clear blueprint for moving raw data from files into a production-ready data warehouse.
 
