@@ -2,20 +2,15 @@ from airflow.decorators import dag
 from datetime import datetime, timedelta
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.bash import BashOperator
+#from airflow.providers.standard.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 import pandas as pd
 
-FILE_PATH_1 = '/home/mulyo/local_airflow/dags/customer_data.csv'
-FILE_PATH_2 = '/home/mulyo/local_airflow/dags/order_data.csv'
-FILE_PATH_3 = '/home/mulyo/local_airflow/dags/order_item_data.csv'
+FILE_PATH_1 = '/opt/airflow/dags/customer_data.csv'
+FILE_PATH_2 = '/opt/airflow/dags/order_data.csv'
+FILE_PATH_3 = '/opt/airflow/dags/order_item_data.csv'
 
-db_config = {
-    'host': 'localhost',
-    'database': 'customers_db',
-    'user': 'postgres',
-    'password': 'duckdb'
-}
 
 table_1 = 'customers'
 table_2 = 'orders'
@@ -69,9 +64,24 @@ sql_insert_3 = '''
     VALUES (%s, %s, %s, %s, %s, %s)
 '''
 
-DBT_PROJECT_DIR = '/home/mulyo/dbt_snowflake/customers/'
-DBT_PROFILE = 'customers'
 
+# -----------------
+# 👇 UPDATED: Use the correct, separate container paths for the VENV and the Project
+# DBT_PROJECT_CONTAINER_PATH remains the path for the code (mounted via docker-compose)
+DBT_PROJECT_CONTAINER_PATH = '/usr/local/airflow/dbt_project'
+
+# Path to the dbt executable inside the DEDICATED VENV (installed via Dockerfile)
+# 👇 CRITICAL CHANGE: Update the path to the new VENV location
+DBT_EXECUTABLE = '/opt/dbt_venv/bin/dbt' 
+
+# The command that will be executed in the BashOperator
+dbt_command = (
+    f'{DBT_EXECUTABLE} run --project-dir {DBT_PROJECT_CONTAINER_PATH} --models customerrevenue'
+)
+# -----------------
+
+
+# --- Python function to ingest CSV ---
 # --- Python function to ingest CSV ---
 def data_ingestion(
         file_path: str,
@@ -81,24 +91,41 @@ def data_ingestion(
         **kwarg
 )-> None:
     # 1. Read CSV using pandas
-    df = pd.read_csv(file_path)
+    try:
+        df = pd.read_csv(file_path)
+    except FileNotFoundError as e:
+        print(f"Error: File not found at {file_path}. {e}")
+        # Optionally raise the exception to fail the task
+        raise
         
     # 2. Get connection from PostgresHook & load the datas
     try:
         hook = PostgresHook(psql_connection)
-        with hook.get_conn as conn:
-            with conn.cursor as cursor:
+        
+        # Correctly get the connection and use a context manager for it
+        with hook.get_conn() as conn: 
+            # Correctly get the cursor
+            with conn.cursor() as cursor: 
+                # Create table
                 cursor.execute(create_table_sql)
-                conn.commit()
 
-                for index, row in df.iterrow():
-                    cursor.execute(sql_insert, row.to_list())
-                conn.commit()
+                # Prepare data for insertion (using execute_batch is generally faster 
+                # but this keeps the original loop structure)
+                data_to_insert = [tuple(row) for index, row in df.iterrows()]
+                
+                # Insert data row by row
+                for row in data_to_insert:
+                    cursor.execute(sql_insert, row)
+                    
+            # Commit the transaction after the cursor block closes
+            conn.commit()
+
     except Exception as e:
-        print(e)
+        # Print the full error for debugging and re-raise to fail the task
+        print(f"Error during database operation: {e}")
+        raise
 
-
-POSTGRES_CONN_ID = 'postgres_conn'
+POSTGRES_CONN_ID = 'postgres2_conn'
 
 default_args = {
     'owner': 'mulyo',
@@ -151,12 +178,11 @@ def csv_to_postgres():
     )
 
     run_dbt_model = BashOperator(
-        task_id = 'run_dbt_model',
-        bash_command = f'''
-            cd {DBT_PROJECT_DIR} && dbt run --profile {DBT_PROFILE}
-        ''',
+        task_id='run_dbt_model',
+        bash_command= dbt_command,
     )
 
+    # Re-establish dependencies: Data loading must complete before dbt transformation runs
     [load_customer_data, load_orders, load_order_items] >> run_dbt_model
 
 csv_to_postgres()
