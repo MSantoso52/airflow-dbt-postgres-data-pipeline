@@ -56,59 +56,60 @@ The combination of these specific tools offers significant leverage by introduci
    # checking airflow container
    > doccker exec -it airflow_docker_airflow-worker_1 bash
    ---airflow---
-   default@d5e5ebbbeb2c:/usr/local/airflow/dbt_project$ ls -l
-   total 48
-   -rw-rw-r-- 1 default 1000  571 Nov 28 00:54 README.md
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 analyses
-   -rw-rw-r-- 1 default 1000 1241 Dec  3 01:14 dbt_project.yml
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 example
-   drwxrwxr-x 2 default 1000 4096 Dec  3 01:16 logs
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 macros
-   drwxrwxr-x 2 default 1000 4096 Dec  6 09:18 models
-   -rw-r--r-- 1 default root  218 Dec  7 09:03 profiles.yml
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 seeds
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 snapshots
-   drwxrwxr-x 4 default 1000 4096 Dec  6 09:01 target
-   drwxrwxr-x 2 default 1000 4096 Nov 28 00:54 tests
+   default@91b5217b254c:/opt/airflow$ ls
+   config  dags  logs  plugins
+   default@91b5217b254c:/opt/airflow$ cd /opt/dbt_venv/
+   default@91b5217b254c:/opt/dbt_venv$ source bin/activate
+   (dbt_venv) default@91b5217b254c:/opt/dbt_venv$ dbt --version
+   Core:
+     - installed: 1.10.15
+     - latest:    1.10.15 - Up to date!
+
+   Plugins:
+     - postgres: 1.9.1 - Up to date!
 
    ---dbt---
-   default@d5e5ebbbeb2c:/usr/local/airflow/dbt_project$ /opt/dbt_venv/bin/dbt debug
-   09:03:14  Running with dbt=1.10.15
-   09:03:14  dbt version: 1.10.15
-   09:03:14  python version: 3.11.14
-   09:03:14  python path: /opt/dbt_venv/bin/python3.11
-   09:03:14  os info: Linux-6.8.0-88-generic-x86_64-with-glibc2.36
-   09:03:14  Using profiles dir at /usr/local/airflow/dbt_project
-   09:03:14  Using profiles.yml file at /usr/local/airflow/dbt_project/profiles.yml
-   09:03:14  Using dbt_project.yml file at /usr/local/airflow/dbt_project/dbt_project.yml
-   09:03:14  adapter type: postgres
-   09:03:14  adapter version: 1.9.1
-   09:03:14  Configuration:
-   09:03:14    profiles.yml file [OK found and valid]
-   09:03:14    dbt_project.yml file [OK found and valid]
-   09:03:14  Required dependencies:
-   09:03:14   - git [OK found]
+   (dbt_venv) default@91b5217b254c:/opt/dbt_venv$ cd /usr/local/airflow/dbt_project/
+   
+   (dbt_venv) default@91b5217b254c:/usr/local/airflow/dbt_project$ ls   
+   README.md  analyses  dbt_project.yml  example  logs  macros  models  profiles.yml  seeds  snapshots  target  tests
+   (dbt_venv) default@91b5217b254c:/usr/local/airflow/dbt_project$ dbt debug
+   22:34:48  Running with dbt=1.10.15
+   22:34:48  dbt version: 1.10.15
+   22:34:48  python version: 3.11.14
+   22:34:48  python path: /opt/dbt_venv/bin/python3.11
+   22:34:48  os info: Linux-6.8.0-88-generic-x86_64-with-glibc2.36
+   22:34:48  Using profiles dir at /usr/local/airflow/dbt_project
+   22:34:48  Using profiles.yml file at /usr/local/airflow/dbt_project/profiles.yml
+   22:34:48  Using dbt_project.yml file at /usr/local/airflow/dbt_project/dbt_project.yml
+   22:34:48  adapter type: postgres
+   22:34:48  adapter version: 1.9.1
+   22:34:48  Configuration:
+   22:34:48    profiles.yml file [OK found and valid]
+   22:34:48    dbt_project.yml file [OK found and valid]
+   22:34:48  Required dependencies:
+   22:34:48   - git [OK found]
 
-   09:03:14  Connection:
-   09:03:14    host: 192.168.**.*
-   09:03:14    port: 5432
-   09:03:14    user: postgres
-   09:03:14    database: customers_db
-   09:03:14    schema: transaction
-   09:03:14    connect_timeout: 10
-   09:03:14    role: None
-   09:03:14    search_path: None
-   09:03:14    keepalives_idle: 0
-   09:03:14    sslmode: None
-   09:03:14    sslcert: None
-   09:03:14    sslkey: None
-   09:03:14    sslrootcert: None
-   09:03:14    application_name: dbt
-   09:03:14    retries: 1
-   09:03:14  Registered adapter: postgres=1.9.1
-   09:03:14    Connection test: [OK connection ok]
+   22:34:48  Connection:
+   22:34:48    host: 192.168.49.1
+   22:34:48    port: 5432
+   22:34:48    user: postgres
+   22:34:48    database: customers_db
+   22:34:48    schema: transaction
+   22:34:48    connect_timeout: 10
+   22:34:48    role: None
+   22:34:48    search_path: None
+   22:34:48    keepalives_idle: 0
+   22:34:48    sslmode: None
+   22:34:48    sslcert: None
+   22:34:48    sslkey: None
+   22:34:48    sslrootcert: None
+   22:34:48    application_name: dbt
+   22:34:48    retries: 1
+   22:34:48  Registered adapter: postgres=1.9.1
+   22:34:48    Connection test: [OK connection ok]
 
-   09:03:14  All checks passed!
+   22:34:48  All checks passed!
    ```
 6. Run airflow dag from webpage
    Access from: http://0.0.0.0:8080/
