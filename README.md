@@ -23,3 +23,6 @@ The combination of these specific tools offers significant leverage by introduci
 # *Project Flow*
 
 # *Assumption*
+1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
+2. Airflow running using docker container, build & run using docker-compose.yml
+3. DBT (Data Build Tool) on docker build with Dockerfile with setup to communicate from Airflow
