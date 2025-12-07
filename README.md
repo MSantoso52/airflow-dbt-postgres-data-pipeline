@@ -21,8 +21,10 @@ The combination of these specific tools offers significant leverage by introduci
 *  Scalability (Airflow): Airflow can effortlessly manage increasing data volumes and pipeline complexity by adding new DAGs (Directed Acyclic Graphs) and parallelizing tasks without redesigning the core infrastructure.
 *  Documentation: dbt provides automatic documentation generation, ensuring that all metrics and transformations are clearly defined and understood by everyone in the organization.
 # *Project Flow*
+1. Create database on PostgreSQL using SQL:
+2. 
 
 # *Assumption*
 1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
 2. Airflow running using docker container, build & run using docker-compose.yml
-3. DBT (Data Build Tool) on docker build with Dockerfile with setup to communicate from Airflow
+3. DBT (Data Build Tool) on docker, build with Dockerfile with setup to communicate from Airflow
