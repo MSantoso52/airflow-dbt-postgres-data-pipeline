@@ -21,8 +21,18 @@ The combination of these specific tools offers significant leverage by introduci
 *  Scalability (Airflow): Airflow can effortlessly manage increasing data volumes and pipeline complexity by adding new DAGs (Directed Acyclic Graphs) and parallelizing tasks without redesigning the core infrastructure.
 *  Documentation: dbt provides automatic documentation generation, ensuring that all metrics and transformations are clearly defined and understood by everyone in the organization.
 # *Project Flow*
-1. Create database on PostgreSQL using SQL:
-2. 
+1. Create database on PostgreSQL using SQL
+   ```sql
+   CREATE DATABASE customers_db;
+   ```
+3. Create docker-compose.yml with dbt project
+   ```lvim
+   volumes:
+     ...
+     # Existing: Mount local dbt project (includes dbt_project.yml and profiles.yml)
+      - /home/mulyo/dbt_snowflake/customers/:/usr/local/airflow/dbt_project:rw
+     ...
+   ```
 
 # *Assumption*
 1. PostgreSQL database (exp: customers_db) for database/data warehouse, I use postgreSQL under docker container.
